@@ -1,4 +1,4 @@
-CREATE TABLE clientes
+CREATE TABLE cliente
 (
     id              UUID PRIMARY KEY,
     nome            VARCHAR(200) NOT NULL,

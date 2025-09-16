@@ -4,8 +4,9 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/db-order
+    jdbc-url: jdbc:postgresql://localhost:5432/db-order
     username: postgres
-    password: secret
+    password: testDB12
     driver-class-name: org.postgresql.Driver
 
   flyway:
