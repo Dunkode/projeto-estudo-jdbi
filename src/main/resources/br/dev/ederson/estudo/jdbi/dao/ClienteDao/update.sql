@@ -6,4 +6,5 @@ SET
     data_nascimento = :dataNascimento,
     ativo = :ativo
 WHERE
-    id = :id;
+    id = :id
+RETURNING cliente;

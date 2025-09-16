@@ -44,16 +44,34 @@ public class ClienteService {
     }
 
     @Transactional
-    public void update(UUID id, @Valid ClienteRequest req) {
+    public int update(UUID id, @Valid ClienteRequest req) {
         Cliente c = getById(id);
 
-        c.setNome(req.getNome());
-        c.setEmail(req.getEmail());
-        c.setTelefone(req.getTelefone());
-        c.setAtivo(req.getAtivo());
-        c.setDataNascimento(req.getDataNascimento());
+        if (req.getNome() != null) {
+            c.setNome(req.getNome());
+        }
 
-        clienteDao.update(c);
+        if (req.getEmail() != null) {
+            c.setEmail(req.getEmail());
+        }
+
+        if (req.getEmail() != null) {
+            c.setEmail(req.getEmail());
+        }
+
+        if (req.getTelefone() != null) {
+            c.setTelefone(req.getTelefone());
+        }
+
+        if (req.getAtivo() != null) {
+            c.setAtivo(req.getAtivo());
+        }
+
+        if (req.getDataNascimento() != null) {
+            c.setDataNascimento(req.getDataNascimento());
+        }
+
+        return clienteDao.update(c);
     }
 
     @Transactional

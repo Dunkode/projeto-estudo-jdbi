@@ -12,55 +12,57 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @RestController
 @RequestMapping("/cliente")
 @Tag(name="Clientes", description="CRUD de clientes")
 public class ClienteController {
-    private final ClienteService service;
-    public ClienteController(ClienteService service){ this.service = service; }
+    private final ClienteService clienteService;
+
+    public ClienteController(ClienteService clienteService) {
+        this.clienteService = clienteService;
+    }
 
     @PostMapping
     @Operation(summary="Cria um cliente")
     public ResponseEntity<ClienteResponse> create(@Valid @RequestBody ClienteRequest req){
-        Cliente saved = service.create(req);
-        return ResponseEntity.created(URI.create("/cliente/" + saved.getId()))
-                             .body(map(saved));
+        Cliente result = clienteService.create(req);
+        return ResponseEntity.created(URI.create("/cliente/" + result.getId())).body(ClienteResponse.map(result));
     }
 
     @GetMapping("/{id}")
+    @Operation(summary="Busca um cliente por ID")
     public ResponseEntity<ClienteResponse> getById(@PathVariable UUID id){
-        return ResponseEntity.ok(map(service.getById(id)));
+        return ResponseEntity.ok(ClienteResponse.map(clienteService.getById(id)));
     }
 
     @GetMapping
+    @Operation(summary="Busca todos os clientes cadastrados")
     public List<ClienteResponse> listAll(){
-        return service.listAll().stream().map(this::map).toList();
+        return clienteService.listAll().stream().map(ClienteResponse::map).toList();
     }
 
     @PutMapping("/{id}")
-    public ClienteResponse update(@PathVariable UUID id, @Valid @RequestBody ClienteRequest req){
-        service.update(id, req);
-        return map(service.getById(id));
+    @Operation(summary="Atualiza um cliente")
+    public ResponseEntity<String> update(@PathVariable UUID id, @RequestBody ClienteRequest req) {
+        try {
+            clienteService.update(id, req);
+
+            return ResponseEntity.created(URI.create("/cliente/" + id)).body("Cliente atualizado com sucesso.");
+
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.noContent().build();
+        }
+
     }
 
     @DeleteMapping("/{id}")
+    @Operation(summary="Deleta um cliente")
     public ResponseEntity<Void> delete(@PathVariable UUID id){
-        service.delete(id);
-        return ResponseEntity.noContent().build();
+        clienteService.delete(id);
+        return ResponseEntity.ok().build();
     }
 
-    private ClienteResponse map(Cliente c){
-        ClienteResponse resp = new ClienteResponse();
-
-        resp.setNome(c.getNome());
-        resp.setEmail(c.getEmail());
-        resp.setTelefone(c.getTelefone());
-        resp.setDataNascimento(c.getDataNascimento());
-        resp.setAtivo(c.getAtivo());
-        resp.setDataCriacao(c.getDataCriacao());
-
-        return resp;
-    }
 }

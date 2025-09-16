@@ -27,7 +27,7 @@ public interface ClienteDao {
     List<Cliente> findAll();
 
     @SqlUpdate
-    void update(@BindBean Cliente cliente);
+    int update(@BindBean Cliente cliente);
 
     @SqlUpdate
     void delete(UUID id);
